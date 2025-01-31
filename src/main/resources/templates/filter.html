@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<style>
+	.filter-section {
+    width: 200px;
+    float: left;
+    margin-right: 20px;
+}
+
+#productList {
+    float: left;
+    width: 70%;
+}
+
+.product-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+<div class="filter-section">
+    <h4>Filter Products</h4>
+    
+    <!-- Filter by price -->
+    <label>Sort by Price:</label>
+    <select id="priceFilter" onchange="filterProducts('price')">
+        <option value="priceAsc">Low to High</option>
+        <option value="priceDesc">High to Low</option>
+    </select>
+    
+    <!-- Filter by name -->
+    <label>Sort by Name:</label>
+    <select id="nameFilter" onchange="filterProducts('name')">
+        <option value="nameAsc">A to Z</option>
+        <option value="nameDesc">Z to A</option>
+    </select>
+</div>
+<script>function filterProducts(filterType) {
+    let sortType = "";
+    if (filterType === "price") {
+        sortType = document.getElementById('priceFilter').value;
+    } else if (filterType === "name") {
+        sortType = document.getElementById('nameFilter').value;
+    }
+
+    // API call to fetch products based on the filter
+    fetch(`/products/all?sortType=${sortType}`)
+        .then(response => response.json())
+        .then(products => {
+            displayProducts(products);
+        });
+}
+
+function displayProducts(products) {
+    let productList = document.getElementById('productList');
+    productList.innerHTML = "";
+
+    products.forEach(product => {
+        let productItem = `
+            <div class="product-item">
+                <h5>${product.name}</h5>
+                <p>Price: ${product.price}</p>
+                <p>Category: ${product.category.name}</p>
+            </div>
+        `;
+        productList.innerHTML += productItem;
+    });
+}
+</script>
+</body>
+</html>

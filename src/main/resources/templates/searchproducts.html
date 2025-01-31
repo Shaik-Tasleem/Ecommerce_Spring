@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Homepage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light grey background */
+    padding-top: 60px;
+    font-family: 'Poppins', sans-serif;
+}
+.logo img {
+    width: 50px; /* Set the width of the image */
+    height: 50px; /* Set the height of the image */
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image covers the container */
+    margin-right: 5px;
+    margin-left: 30px /* Space between the logo and other nav items */
+}
+
+header {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+    justify-content: space-between;
+    align-items: center;
+    background: rgb(238, 238, 213); /* White header */
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Fix the header to the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+input[type="text"] {
+    border: 2px solid #ddd; /* Border color */
+    border-radius: 50px; /* Circular border */
+    padding: 10px 20px; /* Padding inside the input */
+    font-size: 16px; /* Font size for text inside input */
+    outline: none; /* Removes the default outline */
+    width: 680px !important; /* Width of the search box */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 50%; /* Optional shadow for depth */
+}
+
+input[type="text"]::placeholder {
+    color: #aaa; /* Color for the placeholder text */
+}
+
+
+
+
+/* Navigation */
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li {
+    color: #333; /* Dark grey for navigation links */
+}
+
+/* Buttons */
+.account-icon, .cart-icon {
+    background: #fbfbfb; /* Light grey background */
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: auto;
+    margin-right: 8px;
+}
+
+.account-icon:hover, .cart-icon:hover {
+    background: #865f1896; /* Darker grey on hover */
+}
+
+/* Banner */
+.banner {
+    margin: 20px 0;
+}
+
+/* Carousel */
+.carousel-item img {
+    height: 400px; /* Fixed height for carousel images */
+    object-fit: cover;
+}
+
+.categories {
+    padding: 20px;
+    background: #ffffff; /* White background for categories */
+}
+
+.categories h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.category-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.category {
+    background: #fff;
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 8px; /* Rounded corners like product cards */
+    width: 200px; /* Fixed width for category cards */
+    padding: 10px; /* Padding inside category cards */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+   
+    overflow: hidden;
+
+    
+   
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+
+.category img {
+    width: 170px;  /* Set a fixed width */
+    height: 150px; /* Set a fixed height */
+    object-fit: cover;  /* Maintain aspect ratio and cover the area */
+    border-radius: 8px;  /* Same border radius as card */
+    transition: transform 0.3s, background 0.3s;
+}
+
+
+.category:hover {
+    transform: scale(1.05);  /* Lifted on hover */
+    background: #f9f9f9; /* Slightly lighter background on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.featured-products {
+    padding: 20px;
+    background: #ffffff;
+    /* White background for featured products */
+}
+
+
+.featured-products h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Footer */
+footer {
+
+    
+    background-color: #1a1a1a;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.footer-section {
+    width: 30%;
+}
+
+.footer-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.footer-section address, .footer-section p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.footer-social {
+    width: 10%;
+}
+
+.footer-social a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.footer-social img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1); /* Makes the icon white on dark background */
+}
+
+.footer a {
+    color: #4CAF50;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Info Boxes */
+.info-boxes {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.info-box {
+    background-color: #ffffff;
+    border-radius: 12px;
+    width: 200px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+}
+
+.icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.image-button {
+    background-color: transparent; /* Makes button background transparent */
+    border: none; /* Removes any default button border */
+    cursor: pointer; /* Changes cursor to pointer when hovering */
+    display: inline-block; /* Align buttons inline */
+    padding: 0; /* Remove default padding */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+/* Image inside the button */
+.image-button img {
+    border-radius: 15px; /* Rounds the corners */
+    border: 2px solid #000; /* Adds a solid black border */
+    width: 100%; /* Ensure the image fills the button */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Removes bottom space caused by inline images */
+}
+
+.image-button {
+    width: auto; /* Default width for larger screens */
+    height: auto; /* Height adjusts automatically */
+}
+/* Product Cards */
+/* Styling the product grid to display items in a grid layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.favorite-icon {
+    font-size: 1.5rem; /* Adjust size as needed */
+    margin-left: 10px;
+    transition: color 0.3s ease;
+   }
+   button {
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove border */
+    border-radius: 50px; /* Circular border */
+    padding: 10px 20px; /* Padding inside the button */
+    font-size: 16px; /* Font size for button text */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker background on hover */
+}
+
+
+/* 
+@keyframes bounceIn {
+    0%, 100%, 20%, 50%, 80% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+.bounce-in {
+    opacity: 0;
+    animation: bounceIn 0.5s forwards;
+}
+
+.bounce-in.visible {
+    opacity: 1;
+} */
+
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .scrolling-animation {
+        transition: transform 0.4s ease; /* Slower transition for smaller screens */
+    }
+    .image-button {
+        width: auto; /* Smaller width for tablets */
+    }
+}
+
+@media (max-width: 480px) {
+    .scrolling-animation {
+        transform: translateY(50px); /* Shorter translate distance */
+    }
+    .image-button {
+        width: auto; /* Smaller width for mobile devices */
+    }
+}
+        /* CSS styles as per your provided file */
+    </style>
+</head>
+<body>
+  <header>
+        <div class="logo"><img src="http://127.0.0.1:5500/images/revshop-logo.png"><span></span></div>
+        <div>
+        <form action="/search" method="post">
+            <input type="text" name="keyword" placeholder="Search for products..." 
+                   th:value="${keyword}" /><span></span>
+            <button type="submit">Search<span></span></button>
+        </form><span></span></div>
+        <div class="account-cart">
+            <button class="account-icon"> <span><img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/profile-52e0dc.svg" alt="Login"></span>   Login</button>
+            <button class="cart-icon"><img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/header_cart-eed150.svg" alt="Cart"> <span> Cart</span></button>
+            <button class="account-icon"><img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/Store-9eeae2.svg" alt=" Become a Seller"> <span>  Seller</span></button>
+        </div>
+    </header>     
+
+    <main>
+       <div class="container mt-5">
+    <h1 class="text-center">Product List</h1>
+    <div class="row">
+        <div th:each="product : ${products}" class="col-md-4">
+            <div class="card mb-4" th:id="'product-' + ${product.productId}">
+                <img th:src="@{${product.image}}" class="card-img-top" alt="Product Image">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.productName}">Product Name</h5>
+                    <p class="card-text" th:text="${product.productDescription}">Product Description</p>
+                    <p class="card-text"><strong th:text="'Price: $' + ${product.price}">Price: $XX.XX</strong></p>
+                    <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                    <span class="favorite-icon" onclick="toggleFavorite(this)" style="cursor: pointer;">&#10084;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </main>
+
+    <footer>
+        <div class="footer-section">
+            <h3>Contact Us:</h3>
+            <address>
+              Revature <br>
+              Workafella, 12th floor <br>
+              Tech Park Area,<br>
+              Chennai,<br>
+              TN, India<br>
+            </address>
+           
+          </div>
+      
+          
+          <div class="footer-section">
+              <p>Email: <a href="mailto:info@yourcompany.com">info@yourcompany.com</a></p>
+              <p>Phone: <a href="tel:+1234567890">+91912345678</a></p>
+              <p>© 2024 All rights are reserved , RevShop.</p>
+          </div>
+          
+          <div class="footer-social-img">
+            <h3>Follow Us</h3>
+            <a href="#" aria-label="Facebook"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNSAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyLjkzMzEgMjFDMTcuOTAzNyAyMSAyMS45MzMxIDE2Ljk3MDYgMjEuOTMzMSAxMkMyMS45MzMxIDcuMDI5NDQgMTcuOTAzNyAzIDEyLjkzMzEgM0M3Ljk2MjU0IDMgMy45MzMxMSA3LjAyOTQ0IDMuOTMzMTEgMTJDMy45MzMxMSAxNi45NzA2IDcuOTYyNTQgMjEgMTIuOTMzMSAyMVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE2LjY4MzEgOC4yNUgxNS4xODMxQzE0LjU4NjQgOC4yNSAxNC4wMTQxIDguNDg3MDUgMTMuNTkyMSA4LjkwOTAxQzEzLjE3MDIgOS4zMzA5NyAxMi45MzMxIDkuOTAzMjYgMTIuOTMzMSAxMC41VjIxIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik05LjkzMzExIDEzLjVIMTUuOTMzMSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K" alt="Facebook"></a>
+            <a href="#" aria-label="Twitter"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE4M18yMCkiPgo8cGF0aCBkPSJNMTMuNTQzNiAxMC42MTc5TDIwLjA5NzEgM0gxOC41NDQxTDEyLjg1MzcgOS42MTQ0OEw4LjMwODg3IDNIMy4wNjY4OUw5LjkzOTY0IDEzLjAwMjNMMy4wNjY4OSAyMC45OTA4SDQuNjE5OTRMMTAuNjI5MSAxNC4wMDU2TDE1LjQyODggMjAuOTkwOEgyMC42NzA4TDEzLjU0MzIgMTAuNjE3OUgxMy41NDM2Wk0xMS40MTY1IDEzLjA5MDRMMTAuNzIwMiAxMi4wOTQ0TDUuMTc5NTMgNC4xNjkxMUg3LjU2NDkxTDEyLjAzNjMgMTAuNTY1MUwxMi43MzI2IDExLjU2MTFMMTguNTQ0OCAxOS44NzQ4SDE2LjE1OTVMMTEuNDE2NSAxMy4wOTA4VjEzLjA5MDRaIiBmaWxsPSJ3aGl0ZSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE4M18yMCI+CjxyZWN0IHg9IjMuMDY2ODkiIHk9IjMiIHdpZHRoPSIxNy42MDM5IiBoZWlnaHQ9IjE4IiByeD0iMC4yIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=" alt="Twitter"></a>
+            <a href="#" aria-label="YouTube"><img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/YoutubeLogo-8425c4.svg" alt="YouTube"></a>
+            <br> <br>
+            
+          </div>
+        <!-- Footer content -->
+    </footer>
+		    <script>
+		    function toggleFavorite(element) {
+		        element.classList.toggle('red');
+		    }
+		
+		// Navigate to product details page when card is clicked
+		const productCards = document.querySelectorAll('.card');
+		productCards.forEach(card => {
+		    card.addEventListener('click', () => {
+		        window.location.href = '/product/details/' + card.id.split('-')[1]; // Adjust the URL pattern as necessary
+		    });
+		});
+		</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

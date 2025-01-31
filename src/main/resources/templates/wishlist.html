@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Wishlist</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .wishlist-card {
+            border: 1px solid #ced4da;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #ffffff;
+            cursor: pointer;
+        }
+        .remove-btn {
+            color: #dc3545;
+        }
+        .favorite-icon {
+            font-size: 20px;
+            color: grey;
+        }
+        .favorite-icon.red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Your Wishlist</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <div th:each="item : ${wishlist}" class="wishlist-card" id="card-${item.productId}">
+                <h5 th:text="${item.product.productName}">Product Name</h5>
+                <p>Product ID: <span th:text="${item.product.productId}"></span></p>
+                <p>Price: <span th:text="${item.product.price}"></span></p>
+                <button type="button" class="btn btn-danger remove-btn" 
+                        th:onclick="'removeFromWishlist(' + ${item.buyer.buyerId} + ', ' + ${item.product.productId} + ')'">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFavorite(element) {
+        element.classList.toggle('red');
+    }
+    
+    // Navigate to product details page when card is clicked
+    const productCards = document.querySelectorAll('.wishlist-card');
+    productCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const productId = card.id.split('-')[1];
+            window.location.href = '/ecom/wishlist/add/' + productId; // Adjust the URL pattern as necessary
+        });
+    });
+
+    function removeFromWishlist(buyerId, productId) {
+        fetch(`/wishlist/remove?buyerId=${buyerId}&productId=${productId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Product removed from wishlist!");
+                location.reload(); 
+            } else {
+                alert("Failed to remove product from wishlist.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+</script>
+</body>
+</html>

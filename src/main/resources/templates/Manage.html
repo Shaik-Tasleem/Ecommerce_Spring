@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .product-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px; /* Add gap between rows */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-bottom: 10px; /* Add some padding at the bottom of the card */
+        }
+        .product-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+        .product-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Even spacing between content */
+        }
+        .product-info h5 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .product-info p {
+            margin: 0;
+            color: #666;
+            margin-bottom: 10px; /* Add space between product details */
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-bottom: 10px; /* Add space between the buttons and bottom of the card */
+        }
+        .btn-custom {
+            flex: 1;
+            margin: 0 5px;
+        }
+        .back-btn {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .card-wrapper {
+            row-gap: 30px; /* Add space between rows of cards */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Your Products</h1>
+        <div class="row card-wrapper">
+            <!-- Loop through the products and display them -->
+            <div class="col-md-4" th:each="product : ${products}">
+                <div class="card product-card">
+                    <img th:src="@{${product.image}}" alt="Product Image">
+                    <div class="product-info">
+                        <h5 th:text="${product.productName}">Product Name</h5>
+                        <p th:text="${product.productDescription}">Product Description</p>
+                        <p class="price">Price: $<span th:text="${product.price}"></span></p>
+                        <p class="discount">Discount: $<span th:text="${product.discountPrice}"></span></p>
+                        <p>Quantity: <span th:text="${product.quantity}"></span></p>
+                    </div>
+                    <!-- Update and Delete Buttons -->
+                    <div class="btn-group">
+                        <a th:href="@{/products/edit/{productId}(productId=${product.productId})}" class="btn btn-info btn-custom">Update</a>
+                        <button class="btn btn-danger btn-custom" th:onclick="deleteProduct([[${product.productId}]], this)">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back Button to go to the Seller Dashboard -->
+        <div class="back-btn">
+            <a th:href="@{/ecom/SellerDashboard}" class="btn btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function deleteProduct(productId, buttonElement) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                fetch(`/products/delete/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Product successfully deleted.');
+                        // Remove the product card from the DOM
+                        buttonElement.closest('.card').remove();
+                    } else {
+                        alert('Failed to delete the product. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting product:', error);
+                    alert('An error occurred while deleting the product.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

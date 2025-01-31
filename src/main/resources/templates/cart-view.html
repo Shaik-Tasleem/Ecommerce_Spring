@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart</title>
+
+<!-- Poppins Font -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+	rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #f4f4f4;
+	padding-top: 60px;
+	font-family: 'Poppins', sans-serif;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: rgb(238, 238, 213);
+	padding: 10px 20px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1000;
+}
+
+.logo img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-right: 10px;
+}
+
+.navbar {
+	display: flex;
+	gap: 20px;
+}
+
+.navbar a {
+	text-decoration: none;
+	color: #000;
+	font-weight: 600;
+}
+
+.navbar a:hover {
+	color: #865f18;
+}
+
+.btn-primary {
+	background-color: #865f18;
+	border: none;
+}
+
+.btn-primary:hover {
+	background-color: #6c4e14;
+}
+
+.btn-danger {
+	background-color: #dc3545;
+	border: none;
+}
+
+.card {
+	background: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body h5 {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.card-text small {
+	color: #6c757d;
+}
+
+.container {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.card {
+	margin: 10px 0;
+}
+
+/* Flexbox for aligning buttons side by side */
+.button-group {
+	display: flex;
+	gap: 10px;
+}
+
+.quantity-group {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+/* Style for Quantity Buttons */
+.quantity-btn {
+	background-color: #865f18;
+	border: none;
+	color: white;
+	padding: 5px 10px;
+	cursor: pointer;
+}
+
+.quantity-btn:hover {
+	background-color: #6c4e14;
+}
+
+/* Footer Buttons */
+.footer-buttons {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+
+.footer-buttons button {
+	width: 48%;
+}
+</style>
+</head>
+<body>
+	<header>
+		<div class="logo">
+			<img src="http://127.0.0.1:5500/images/revshop-logo.png" alt="Logo">
+		</div>
+		<form action="/search" method="post">
+			<input type="text" name="keyword"
+				placeholder="Search for products..." th:value="${keyword}">
+			<button type="submit" class="btn btn-light">
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</form>
+		<div class="account-cart">
+			<button class="cart-icon">
+				<img
+					src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/header_cart-eed150.svg"
+					alt="Cart"> <span>Cart</span>
+			</button>
+		</div>
+	</header>
+
+	<div class="container">
+		<h2>Your Cart</h2>
+		<div th:if="${cartItems != null}">
+			<div th:each="item : ${cartItems}" class="card mb-3">
+				<div class="row g-0">
+					<div class="col-md-4">
+						<img th:src="${item.image}" class="img-fluid rounded-start"
+							alt="Product Image">
+					</div>
+					<div class="col-md-8">
+						<div class="card-body">
+							<h5 class="card-title" th:text="${item.productName}">Product
+								Name</h5>
+							<p class="card-text">
+								<small class="text-muted">Price: $<span
+									th:text="${item.price}">Product Price</span></small>
+							</p>
+
+							<td>
+								<button type="button" class="btn btn-secondary btn-sm"
+									th:onclick="updateQuantity([[${item.productId}]], -1)">-</button>
+
+								<input
+								type="text" th:id="'quantity_' + ${item.productId}"
+								name="quantity_${item.productId}" value="1" size="3"
+								readonly>
+								<button type="button" class="btn btn-secondary btn-sm"
+									th:onclick="updateQuantity([[${item.productId}]], 1)">+</button>
+							</td>
+
+							<form th:action="@{/ecom/cart/remove/{productId}(productId=${item.productId})}" method="post">
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:if="${cartItems == null || cartItems.isEmpty()}">
+			<p>Your cart is empty.</p>
+		</div>
+
+		<div class="footer-buttons">
+			<button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+			<form th:action="@{/ecom/cart/buyNow}" method="post">
+				<button type="submit" class="btn btn-primary">Buy Now</button>
+			</form>
+		</div>
+	</div>
+	<script>
+	function updateQuantity(productId, change) {
+	    console.log("Updating quantity for productId:", productId);  // Debug log
+
+	    // Try to fetch the input element by its dynamic ID
+	    var quantityInput = document.getElementById("quantity_" + productId);
+	    
+	    console.log(quantityInput); // Debug log to check if input is found
+
+	    if (!quantityInput) {
+	        console.error("Element with ID 'quantity_" + productId + "' not found.");
+	        return; // Stop execution if the input element is not found
+	    }
+
+	    var currentQuantity = parseInt(quantityInput.value);
+	    var newQuantity = currentQuantity + change;
+
+	    if (newQuantity < 1) {
+	        newQuantity = 1;
+	    }
+
+	    quantityInput.value = newQuantity;
+	}
+	function goBack() {
+        window.history.back();
+ // Takes the user back to the previous page in the browser's history
+    }
+	</script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+	<script src="https://kit.fontawesome.com/b71be40703.js"
+		crossorigin="anonymous"></script>
+</body>
+</html>
